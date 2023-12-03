@@ -35,9 +35,9 @@ class _HomeState extends ConsumerState<Home> {
       appBar: AppBar(
         actions: [
           IconButton(
-            tooltip: 'Clear all',
+            tooltip: 'Reset',
             onPressed: () => _clockRainGame.clearAll(),
-            icon: const Icon(Icons.clear_all),
+            icon: const Icon(Icons.refresh_outlined),
           ),
           IconButton(
             tooltip: isDarkMode ? 'Light mode' : 'Dark mode',
