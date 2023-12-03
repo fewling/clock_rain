@@ -21,10 +21,14 @@ class ClockRainGame extends Forge2DGame {
 
   var _materialColorIndex = 0;
 
+  Wall? wallL;
+  Wall? wallR;
+  Wall? wallB;
+
   @override
   Future<void> onAttach() async {
     super.onAttach();
-    createBoundaries();
+    await createBoundaries();
 
     final current = DateTime.now();
     final nextSec = DateTime(
@@ -104,13 +108,12 @@ class ClockRainGame extends Forge2DGame {
   }
 
   Future<void> _createSecondBody(Color backgroundColor) async {
-    final worldSize = screenToWorld(camera.viewport.effectiveSize);
     final renderObj = measureSecondsKey.currentContext?.findRenderObject();
     final syze = renderObj?.semanticBounds.size ?? Size.zero;
     final scale = screenToWorld(Vector2(syze.width / 2, syze.height / 2));
 
     final fallingBody = ClockFallingBody(
-      pos: Vector2(worldSize.x - scale.x, -scale.y),
+      pos: Vector2(wallR!.end.x - scale.x, -scale.y),
       w: scale.x,
       h: scale.y,
       time: DateTime.now(),
@@ -164,17 +167,20 @@ class ClockRainGame extends Forge2DGame {
     }
   }
 
-  void createBoundaries() {
+  Future<void> createBoundaries() async {
     final topLeft = Vector2.zero();
     final bottomRight = screenToWorld(camera.viewport.effectiveSize);
     final topRight = Vector2(bottomRight.x, topLeft.y);
     final bottomLeft = Vector2(topLeft.x, bottomRight.y);
 
-    addAll([
-      // Wall(topLeft, topRight),
-      Wall(topRight, bottomRight),
-      Wall(bottomRight, bottomLeft),
-      Wall(bottomLeft, topLeft),
+    wallL = Wall(topLeft, bottomLeft);
+    wallR = Wall(topRight, bottomRight);
+    wallB = Wall(bottomLeft, bottomRight);
+
+    await addAll([
+      wallL!,
+      wallR!,
+      wallB!,
     ]);
   }
 

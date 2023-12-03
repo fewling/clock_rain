@@ -8,7 +8,7 @@ import 'clock_rain_screen.dart';
 
 /// Since all the falling widgets are the same, we can place an invisible one on the screen,
 /// then use this key to obtain the `currentContext`, in turn the size of the widget.
-/// So tha we can match the size of the [FallingWidget] and [FallingBody].
+/// So that we can match the size of the [FallingWidget] and [FallingBody].
 final measureSecondsKey = GlobalKey();
 final measureMinutesKey = GlobalKey();
 final measureHoursKey = GlobalKey();
