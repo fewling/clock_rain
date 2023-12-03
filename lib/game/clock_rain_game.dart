@@ -15,9 +15,9 @@ class ClockRainGame extends Forge2DGame {
   var _minute = -1;
   var _hour = -1;
 
-  final secondBodies = <ClockFallingBody>[];
-  final minuteBodies = <ClockFallingBody>[];
-  final hourBodies = <ClockFallingBody>[];
+  final secondBodies = <FallingBodyComponent>[];
+  final minuteBodies = <FallingBodyComponent>[];
+  final hourBodies = <FallingBodyComponent>[];
 
   var _materialColorIndex = 0;
 
@@ -112,7 +112,7 @@ class ClockRainGame extends Forge2DGame {
     final syze = renderObj?.semanticBounds.size ?? Size.zero;
     final scale = screenToWorld(Vector2(syze.width / 2, syze.height / 2));
 
-    final fallingBody = ClockFallingBody(
+    final fallingBody = FallingBodyComponent(
       pos: Vector2(wallR!.end.x - scale.x, -scale.y),
       w: scale.x,
       h: scale.y,
@@ -131,7 +131,7 @@ class ClockRainGame extends Forge2DGame {
     final syze = renderObj?.semanticBounds.size ?? Size.zero;
     final scale = screenToWorld(Vector2(syze.width / 2, syze.height / 2));
 
-    final fallingBody = ClockFallingBody(
+    final fallingBody = FallingBodyComponent(
       pos: Vector2(worldSize.x / 4, -scale.y),
       w: scale.x,
       h: scale.y,
@@ -148,7 +148,7 @@ class ClockRainGame extends Forge2DGame {
     final syze = renderObj?.semanticBounds.size ?? Size.zero;
     final scale = screenToWorld(Vector2(syze.width / 2, syze.height / 2));
 
-    final fallingBody = ClockFallingBody(
+    final fallingBody = FallingBodyComponent(
       pos: Vector2(scale.x, -scale.y),
       w: scale.x,
       h: scale.y,
@@ -266,7 +266,7 @@ enum FallingBodyType {
   hour,
 }
 
-class ClockFallingBody extends BodyComponent {
+class FallingBodyComponent extends BodyComponent {
   final Vector2 pos;
   final DateTime time;
   final FallingBodyType type;
@@ -276,7 +276,7 @@ class ClockFallingBody extends BodyComponent {
   double h;
   double shrinkRate;
 
-  ClockFallingBody({
+  FallingBodyComponent({
     required this.pos,
     required this.time,
     required this.type,
@@ -322,7 +322,7 @@ class ClockFallingBody extends BodyComponent {
     renderBody = false;
     paint = Paint()..color = backgroundColor;
 
-    add(ClockFallingTextComponent(parent: this));
+    add(FallingTextComponent(parent: this));
 
     return body;
   }
@@ -334,11 +334,11 @@ class ClockFallingBody extends BodyComponent {
   }
 }
 
-class ClockFallingTextComponent extends TextComponent {
+class FallingTextComponent extends TextComponent {
   @override
-  final ClockFallingBody parent;
+  final FallingBodyComponent parent;
 
-  ClockFallingTextComponent({
+  FallingTextComponent({
     super.text,
     super.textRenderer,
     super.anchor,

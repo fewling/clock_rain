@@ -8,7 +8,7 @@ import 'clock_rain_screen.dart';
 
 /// Since all the falling widgets are the same, we can place an invisible one on the screen,
 /// then use this key to obtain the `currentContext`, in turn the size of the widget.
-/// So that we can match the size of the [FallingWidget] and [FallingBody].
+/// So that we can match the size of the [FallingBodyWidget] and [FallingBodyComponent].
 final measureSecondsKey = GlobalKey();
 final measureMinutesKey = GlobalKey();
 final measureHoursKey = GlobalKey();
@@ -58,7 +58,7 @@ class _HomeState extends ConsumerState<Home> {
           Opacity(
             key: measureHoursKey,
             opacity: op,
-            child: ClockFallingTextWidget(
+            child: FallingTextWidget(
               '03',
               style: hourTextStyle,
             ),
@@ -66,7 +66,7 @@ class _HomeState extends ConsumerState<Home> {
           Opacity(
             key: measureMinutesKey,
             opacity: op,
-            child: ClockFallingTextWidget(
+            child: FallingTextWidget(
               '02',
               style: minuteTextStyle,
             ),
@@ -74,7 +74,7 @@ class _HomeState extends ConsumerState<Home> {
           Opacity(
             key: measureSecondsKey,
             opacity: op,
-            child: ClockFallingTextWidget(
+            child: FallingTextWidget(
               '01',
               style: secondTextStyle,
             ),
