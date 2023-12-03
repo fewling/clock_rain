@@ -4,6 +4,8 @@ Clock Rain is a unique project that displays time in a creative and visually app
 
 It uses the flame_forge2d package to simulate the physics of the falling blocks.
 
+[Take a look at the demo](https://clock-rain.web.app/).
+
 ## TODOs
 
 - [ ] Add a setting page for more customizations.
