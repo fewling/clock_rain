@@ -222,7 +222,7 @@ class ClockRainGame extends Forge2DGame {
     });
   }
 
-  void clearAll() {
+  Future<void> reset() async {
     for (final fallingBody in [
       ...secondBodies,
       ...minuteBodies,
@@ -234,6 +234,11 @@ class ClockRainGame extends Forge2DGame {
     _second = -1;
     _minute = -1;
     _hour = -1;
+
+    wallL?.removeFromParent();
+    wallR?.removeFromParent();
+    wallB?.removeFromParent();
+    await createBoundaries();
   }
 }
 

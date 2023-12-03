@@ -36,7 +36,7 @@ class _HomeState extends ConsumerState<Home> {
         actions: [
           IconButton(
             tooltip: 'Reset',
-            onPressed: () => _clockRainGame.clearAll(),
+            onPressed: () => _clockRainGame.reset(),
             icon: const Icon(Icons.refresh_outlined),
           ),
           IconButton(
