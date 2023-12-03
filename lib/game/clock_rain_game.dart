@@ -332,6 +332,13 @@ class FallingBodyComponent extends BodyComponent {
     world.destroyBody(body);
     super.onRemove();
   }
+
+  void onTap() {
+    final mag = body.mass * 50;
+    final xDirection = Random().nextBool() ? 1 : -1;
+    final impulse = Vector2(mag * xDirection, -mag);
+    body.applyLinearImpulse(impulse);
+  }
 }
 
 class FallingTextComponent extends TextComponent {

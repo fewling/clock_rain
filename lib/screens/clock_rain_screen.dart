@@ -87,7 +87,6 @@ class FallingBodyWidget extends StatelessWidget {
   final double angle;
 
   final TextStyle? style;
-  final Widget? child;
 
   final FallingBodyComponent body;
 
@@ -99,7 +98,6 @@ class FallingBodyWidget extends StatelessWidget {
     required this.height,
     required this.angle,
     required this.body,
-    this.child,
     this.style,
   }) : super(key: key);
 
@@ -119,12 +117,12 @@ class FallingBodyWidget extends StatelessWidget {
         child: SizedBox(
           width: width,
           height: height,
-          child: child ??
-              FallingTextWidget(
-                msg.toString().padLeft(2, '0'),
-                style: style,
-                backgroundColor: body.backgroundColor,
-              ),
+          child: FallingTextWidget(
+            msg.toString().padLeft(2, '0'),
+            style: style,
+            backgroundColor: body.backgroundColor,
+            onTap: () => body.onTap(),
+          ),
         ),
       ),
     );
@@ -137,11 +135,14 @@ class FallingTextWidget extends StatelessWidget {
     super.key,
     this.style,
     this.backgroundColor,
+    this.onTap,
   });
 
   final String msg;
   final TextStyle? style;
   final Color? backgroundColor;
+
+  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -150,7 +151,7 @@ class FallingTextWidget extends StatelessWidget {
       color: backgroundColor,
       clipBehavior: Clip.antiAlias,
       child: InkWell(
-        onTap: () {},
+        onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(msg, style: style),
