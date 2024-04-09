@@ -74,6 +74,28 @@ class _ClockRainScreenState extends State<ClockRainScreen>
                 );
               },
             ),
+            Consumer(
+              builder: (context, ref, child) {
+                final upright = ref.watch(
+                  appPreferenceNotifierProvider.select(
+                    (pref) => pref.uprightText,
+                  ),
+                );
+
+                return SwitchListTile(
+                  title: const Text('Upright text'),
+                  secondary: AnimatedRotation(
+                    turns: upright ? 0 : (1 / 4),
+                    duration: const Duration(milliseconds: 300),
+                    child: const Icon(Icons.text_rotation_none_outlined),
+                  ),
+                  value: upright,
+                  onChanged: (_) => ref
+                      .read(appPreferenceNotifierProvider.notifier)
+                      .toggleUprightText(),
+                );
+              },
+            ),
           ],
         ),
       ),
@@ -159,16 +181,29 @@ class FallingBodyWidget extends StatelessWidget {
         angle: angle,
         child: Card(
           margin: EdgeInsets.zero,
-          color: body.backgroundColor,
+          color: body.backgroundColor.withOpacity(1),
           child: SizedBox(
             width: width,
             height: height,
             child: InkWell(
               onTap: body.onTap,
               child: Center(
-                child: Text(
-                  msg.toString().padLeft(2, '0'),
-                  style: style,
+                child: Consumer(
+                  builder: (_, ref, child) {
+                    final upright = ref.watch(
+                      appPreferenceNotifierProvider.select(
+                        (value) => value.uprightText,
+                      ),
+                    );
+                    return Transform.rotate(
+                      angle: upright ? -angle : 0,
+                      child: child,
+                    );
+                  },
+                  child: Text(
+                    msg.toString().padLeft(2, '0'),
+                    style: style,
+                  ),
                 ),
               ),
             ),

@@ -14,16 +14,19 @@ final sharedPreferenceProvider = Provider<SharedPreferences>((_) {
 class AppPreferenceNotifier extends _$AppPreferenceNotifier {
   static const colorSchemeKey = 'color scheme';
   static const isDarkModeKey = 'dark mode';
+  static const uprightTextKey = 'upright text';
 
   @override
   AppPreference build() {
     final sp = ref.watch(sharedPreferenceProvider);
     final colorSeed = sp.getInt(colorSchemeKey) ?? Colors.green.value;
     final isDarkMode = sp.getBool(isDarkModeKey) ?? false;
+    final uprightText = sp.getBool(uprightTextKey) ?? false;
 
     return AppPreference(
       colorSchemeSeed: colorSeed,
       isDarkMode: isDarkMode,
+      uprightText: uprightText,
     );
   }
 
@@ -43,5 +46,14 @@ class AppPreferenceNotifier extends _$AppPreferenceNotifier {
         .read(sharedPreferenceProvider)
         .setBool(isDarkModeKey, !isDark)
         .then((value) => state = state.copyWith(isDarkMode: !isDark));
+  }
+
+  void toggleUprightText() {
+    final isUpright = state.uprightText;
+
+    ref
+        .read(sharedPreferenceProvider)
+        .setBool(uprightTextKey, !isUpright)
+        .then((value) => state = state.copyWith(uprightText: !isUpright));
   }
 }

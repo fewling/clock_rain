@@ -7,5 +7,6 @@ class AppPreference with _$AppPreference {
   const factory AppPreference({
     required int colorSchemeSeed,
     @Default(false) bool isDarkMode,
+    @Default(false) bool uprightText,
   }) = _AppPreference;
 }
