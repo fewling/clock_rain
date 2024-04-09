@@ -126,13 +126,19 @@ class ClockRainGame extends Forge2DGame {
   }
 
   Future<void> _createMinuteBody(Color backgroundColor) async {
-    final worldSize = screenToWorld(camera.viewport.effectiveSize);
     final renderObj = measureMinutesKey.currentContext?.findRenderObject();
+    final hrRenderObj = measureHoursKey.currentContext?.findRenderObject();
+
     final syze = renderObj?.semanticBounds.size ?? Size.zero;
+    final hrSyze = hrRenderObj?.semanticBounds.size ?? Size.zero;
+
     final scale = screenToWorld(Vector2(syze.width / 2, syze.height / 2));
+    final hrScale = screenToWorld(Vector2(hrSyze.width / 2, hrSyze.height / 2));
+
+    final hrBlockWidth = hrScale.x * 2;
 
     final fallingBody = FallingBodyComponent(
-      pos: Vector2(worldSize.x / 4, -scale.y),
+      pos: Vector2(hrBlockWidth + scale.x, -scale.y),
       w: scale.x,
       h: scale.y,
       time: DateTime.now(),
@@ -295,13 +301,12 @@ class FallingBodyComponent extends BodyComponent {
   @override
   Body createBody() {
     final bodyDef = BodyDef(
-      userData: this,
       angularVelocity: angularVelocity,
       position: pos,
       type: BodyType.dynamic,
     );
 
-    final friction = type == FallingBodyType.seconds ? 0.8 : 0.3;
+    final friction = type == FallingBodyType.seconds ? 0.2 : 0.3;
 
     final restitution = switch (type) {
       FallingBodyType.seconds => 0.3,
@@ -310,9 +315,9 @@ class FallingBodyComponent extends BodyComponent {
     };
 
     final density = switch (type) {
-      FallingBodyType.seconds => 0.1,
-      FallingBodyType.minutes => 0.2,
-      FallingBodyType.hour => 0.3,
+      FallingBodyType.seconds => 10,
+      FallingBodyType.minutes => 10,
+      FallingBodyType.hour => 10,
     };
 
     final body = world.createBody(bodyDef);
@@ -370,16 +375,16 @@ class FallingTextComponent extends TextComponent {
     return super.onLoad();
   }
 
-  @override
-  void update(double dt) {
-    super.update(dt);
-    size = Vector2(parent.w, parent.h);
-    scale = Vector2(parent.w / 15, parent.h / 15);
+  // @override
+  // void update(double dt) {
+  //   super.update(dt);
+  //   size = Vector2(parent.w, parent.h);
+  //   scale = Vector2(parent.w / 15, parent.h / 15);
 
-    textRenderer = TextPaint(
-      style: const TextStyle(
-        color: Colors.white,
-      ),
-    );
-  }
+  //   textRenderer = TextPaint(
+  //     style: const TextStyle(
+  //       color: Colors.white,
+  //     ),
+  //   );
+  // }
 }
