@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flame/components.dart' hide Timer;
+import 'package:flame_audio/audio_pool.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flame_forge2d/flame_forge2d.dart' hide Timer;
 import 'package:flutter/material.dart';
 
@@ -12,6 +14,7 @@ const _shrinkRate = 0.9;
 class ClockRainGame extends Forge2DGame {
   ClockRainGame() : super(gravity: Vector2(0, 30));
   late Timer _timer;
+  late AudioPool _pool;
 
   var _second = -1;
   var _minute = -1;
@@ -25,7 +28,18 @@ class ClockRainGame extends Forge2DGame {
 
   Wall? wallL;
   Wall? wallR;
-  Wall? wallB;
+  Ground? ground;
+
+  @override
+  FutureOr<void> onLoad() async {
+    _pool = await FlameAudio.createPool(
+      'falling_sfx.mp3',
+      minPlayers: 1,
+      maxPlayers: 1,
+    );
+
+    return super.onLoad();
+  }
 
   @override
   Future<void> onAttach() async {
@@ -122,6 +136,7 @@ class ClockRainGame extends Forge2DGame {
       type: FallingBodyType.seconds,
       angularVelocity: -Random().nextDouble() * pi * 2,
       backgroundColor: backgroundColor,
+      pool: _pool,
     );
     await add(fallingBody);
     secondBodies.add(fallingBody);
@@ -140,12 +155,13 @@ class ClockRainGame extends Forge2DGame {
     final hrBlockWidth = hrScale.x * 2;
 
     final fallingBody = FallingBodyComponent(
-      pos: Vector2(hrBlockWidth + scale.x, -scale.y),
+      pos: Vector2(hrBlockWidth + scale.x + 0.2, -scale.y),
       w: scale.x,
       h: scale.y,
       time: DateTime.now(),
       type: FallingBodyType.minutes,
       backgroundColor: backgroundColor,
+      pool: _pool,
     );
     await add(fallingBody);
     minuteBodies.add(fallingBody);
@@ -163,6 +179,7 @@ class ClockRainGame extends Forge2DGame {
       time: DateTime.now(),
       type: FallingBodyType.hour,
       backgroundColor: backgroundColor,
+      pool: _pool,
     );
     await add(fallingBody);
     hourBodies.add(fallingBody);
@@ -183,12 +200,12 @@ class ClockRainGame extends Forge2DGame {
 
     wallL = Wall(topLeft, bottomLeft);
     wallR = Wall(topRight, bottomRight);
-    wallB = Wall(bottomLeft, bottomRight);
+    ground = Ground(bottomLeft, bottomRight);
 
     await addAll([
       wallL!,
       wallR!,
-      wallB!,
+      ground!,
     ]);
   }
 
@@ -245,7 +262,7 @@ class ClockRainGame extends Forge2DGame {
 
     wallL?.removeFromParent();
     wallR?.removeFromParent();
-    wallB?.removeFromParent();
+    ground?.removeFromParent();
     await createBoundaries();
   }
 }
@@ -273,13 +290,17 @@ class Wall extends BodyComponent {
   }
 }
 
+class Ground extends Wall {
+  Ground(super.start, super.end);
+}
+
 enum FallingBodyType {
   seconds,
   minutes,
   hour,
 }
 
-class FallingBodyComponent extends BodyComponent {
+class FallingBodyComponent extends BodyComponent with ContactCallbacks {
   final Vector2 pos;
   final DateTime time;
   final FallingBodyType type;
@@ -288,6 +309,7 @@ class FallingBodyComponent extends BodyComponent {
   double w;
   double h;
   double shrinkRate;
+  AudioPool pool;
 
   FallingBodyComponent({
     required this.pos,
@@ -296,13 +318,30 @@ class FallingBodyComponent extends BodyComponent {
     required this.w,
     required this.h,
     required this.backgroundColor,
+    required this.pool,
     this.angularVelocity = 0,
     this.shrinkRate = 1,
   });
 
+  var _isContacted = false;
+
+  @override
+  void beginContact(Object other, Contact contact) {
+    super.beginContact(other, contact);
+
+    if (other is FallingBodyComponent || other is Ground) {
+      if (!_isContacted) {
+        _isContacted = true;
+        final vol = min(body.linearVelocity.length, 200) / 200;
+        pool.start(volume: vol);
+      }
+    }
+  }
+
   @override
   Body createBody() {
     final bodyDef = BodyDef(
+      userData: this,
       angularVelocity: angularVelocity,
       position: pos,
       type: BodyType.dynamic,
