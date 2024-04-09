@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 
 import '../screens/home.dart';
 
+const _shrinkRate = 0.9;
+
 class ClockRainGame extends Forge2DGame {
   ClockRainGame() : super(gravity: Vector2(0, 30));
   late Timer _timer;
@@ -84,7 +86,7 @@ class ClockRainGame extends Forge2DGame {
 
       for (final fallingBody in secondBodies) {
         if (fallingBody.time.minute == currentMin) continue;
-        fallingBody.shrinkRate = 0.9;
+        fallingBody.shrinkRate = _shrinkRate;
       }
 
       await _createMinuteBody(backgroundColor);
@@ -95,12 +97,12 @@ class ClockRainGame extends Forge2DGame {
 
       for (final fallingBody in minuteBodies) {
         if (fallingBody.time.hour == currentHour) continue;
-        fallingBody.shrinkRate = 0.9;
+        fallingBody.shrinkRate = _shrinkRate;
       }
 
       for (final fallingBody in hourBodies) {
         if (fallingBody.time.hour == currentHour) continue;
-        fallingBody.shrinkRate = 0.9;
+        fallingBody.shrinkRate = _shrinkRate;
       }
 
       await _createHourBody(backgroundColor);
@@ -234,7 +236,7 @@ class ClockRainGame extends Forge2DGame {
       ...minuteBodies,
       ...hourBodies
     ]) {
-      fallingBody.shrinkRate = 0.9;
+      fallingBody.shrinkRate = _shrinkRate;
     }
 
     _second = -1;
@@ -344,10 +346,12 @@ class FallingBodyComponent extends BodyComponent {
   }
 
   void onTap() {
-    final mag = body.mass * 50;
-    final xDirection = Random().nextBool() ? 1 : -1;
-    final impulse = Vector2(mag * xDirection, -mag);
-    body.applyLinearImpulse(impulse);
+    // final mag = body.mass * 50;
+    // final xDirection = Random().nextBool() ? 1 : -1;
+    // final impulse = Vector2(mag * xDirection, -mag);
+    // body.applyLinearImpulse(impulse);
+
+    shrinkRate = _shrinkRate;
   }
 }
 
