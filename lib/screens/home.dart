@@ -6,7 +6,7 @@ import '../game/clock_rain_game.dart';
 import '../services/preference_provider.dart';
 import 'clock_rain_screen.dart';
 
-/// Use this key to obtain the `currentContext`, in turn the `Size` of the widget.
+/// Use these keys to obtain the `currentContext`, in turn the `Size` of the widget.
 /// So that we can match the size of the [FallingBodyWidget] and [FallingBodyComponent].
 final measureSecondsKey = GlobalKey();
 final measureMinutesKey = GlobalKey();
@@ -25,11 +25,11 @@ class _HomeState extends ConsumerState<Home> {
   @override
   Widget build(BuildContext context) {
     final hourTextStyle = Theme.of(context).textTheme.displayLarge;
-    final minuteTextStyle = Theme.of(context).textTheme.headlineLarge;
-    final secondTextStyle = Theme.of(context).textTheme.labelLarge;
+    final minuteTextStyle = Theme.of(context).textTheme.displaySmall;
+    final secondTextStyle = Theme.of(context).textTheme.headlineSmall;
     const op = 0.0;
 
-    final isDarkMode = ref.watch(appPreferenceProvider).isDarkMode;
+    final isDarkMode = ref.watch(appPreferenceNotifierProvider).isDarkMode;
 
     return Scaffold(
       appBar: AppBar(
@@ -41,9 +41,9 @@ class _HomeState extends ConsumerState<Home> {
           ),
           IconButton(
             tooltip: isDarkMode ? 'Light mode' : 'Dark mode',
-            onPressed: () {
-              ref.read(appPreferenceProvider.notifier).toggleBrightness();
-            },
+            onPressed: ref
+                .read(appPreferenceNotifierProvider.notifier)
+                .toggleBrightness,
             icon: isDarkMode
                 ? const Icon(Icons.light_mode_outlined)
                 : const Icon(Icons.dark_mode_outlined),
@@ -57,7 +57,7 @@ class _HomeState extends ConsumerState<Home> {
           Opacity(
             key: measureHoursKey,
             opacity: op,
-            child: FallingTextWidget(
+            child: TextMeasureWidget(
               '03',
               style: hourTextStyle,
             ),
@@ -65,7 +65,7 @@ class _HomeState extends ConsumerState<Home> {
           Opacity(
             key: measureMinutesKey,
             opacity: op,
-            child: FallingTextWidget(
+            child: TextMeasureWidget(
               '02',
               style: minuteTextStyle,
             ),
@@ -73,7 +73,7 @@ class _HomeState extends ConsumerState<Home> {
           Opacity(
             key: measureSecondsKey,
             opacity: op,
-            child: FallingTextWidget(
+            child: TextMeasureWidget(
               '01',
               style: secondTextStyle,
             ),

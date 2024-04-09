@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/app_preference.dart';
+
+part 'preference_provider.g.dart';
 
 final sharedPreferenceProvider = Provider<SharedPreferences>((_) {
   throw UnimplementedError();
 });
 
-final appPreferenceProvider =
-    NotifierProvider<AppPreferenceNotifier, AppPreference>(
-        AppPreferenceNotifier.new);
-
-class AppPreferenceNotifier extends Notifier<AppPreference> {
+@riverpod
+class AppPreferenceNotifier extends _$AppPreferenceNotifier {
   static const colorSchemeKey = 'color scheme';
   static const isDarkModeKey = 'dark mode';
 

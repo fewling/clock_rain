@@ -23,8 +23,12 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final colorSeed = ref.watch(appPreferenceProvider).colorSchemeSeed;
-    final isDarkMode = ref.watch(appPreferenceProvider).isDarkMode;
+    final colorSeed = ref.watch(
+      appPreferenceNotifierProvider.select((value) => value.colorSchemeSeed),
+    );
+    final isDarkMode = ref.watch(
+      appPreferenceNotifierProvider.select((value) => value.isDarkMode),
+    );
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,

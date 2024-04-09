@@ -91,7 +91,7 @@ class FallingBodyWidget extends StatelessWidget {
   final FallingBodyComponent body;
 
   const FallingBodyWidget({
-    Key? key,
+    super.key,
     required this.left,
     required this.top,
     required this.width,
@@ -99,7 +99,7 @@ class FallingBodyWidget extends StatelessWidget {
     required this.angle,
     required this.body,
     this.style,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -114,14 +114,21 @@ class FallingBodyWidget extends StatelessWidget {
       top: top,
       child: Transform.rotate(
         angle: angle,
-        child: SizedBox(
-          width: width,
-          height: height,
-          child: FallingTextWidget(
-            msg.toString().padLeft(2, '0'),
-            style: style,
-            backgroundColor: body.backgroundColor,
-            onTap: () => body.onTap(),
+        child: Card(
+          margin: EdgeInsets.zero,
+          color: body.backgroundColor,
+          child: SizedBox(
+            width: width,
+            height: height,
+            child: InkWell(
+              onTap: body.onTap,
+              child: Center(
+                child: Text(
+                  msg.toString().padLeft(2, '0'),
+                  style: style,
+                ),
+              ),
+            ),
           ),
         ),
       ),
@@ -129,8 +136,8 @@ class FallingBodyWidget extends StatelessWidget {
   }
 }
 
-class FallingTextWidget extends StatelessWidget {
-  const FallingTextWidget(
+class TextMeasureWidget extends StatelessWidget {
+  const TextMeasureWidget(
     this.msg, {
     super.key,
     this.style,
