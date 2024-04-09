@@ -143,11 +143,13 @@ class TextMeasureWidget extends StatelessWidget {
     this.style,
     this.backgroundColor,
     this.onTap,
+    this.padding = 8,
   });
 
   final String msg;
   final TextStyle? style;
   final Color? backgroundColor;
+  final double padding;
 
   final void Function()? onTap;
 
@@ -160,7 +162,7 @@ class TextMeasureWidget extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: EdgeInsets.all(padding),
           child: Text(msg, style: style),
         ),
       ),
