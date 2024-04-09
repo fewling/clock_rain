@@ -1,7 +1,9 @@
 import 'package:flame_forge2d/flame_forge2d.dart' hide Transform;
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../game/clock_rain_game.dart';
+import '../services/preference_provider.dart';
 
 class ClockRainScreen extends StatefulWidget {
   const ClockRainScreen({
@@ -45,10 +47,51 @@ class _ClockRainScreenState extends State<ClockRainScreen>
     final secondTextStyle = txtTheme.labelLarge?.copyWith(color: textColor);
 
     return Scaffold(
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            ListTile(
+              leading: const Icon(Icons.refresh_outlined),
+              onTap: widget.game.reset,
+              title: const Text('Reset'),
+            ),
+            Consumer(
+              builder: (context, ref, child) {
+                final isDarkMode = ref.watch(
+                  appPreferenceNotifierProvider.select(
+                    (pref) => pref.isDarkMode,
+                  ),
+                );
+
+                return ListTile(
+                  leading: isDarkMode
+                      ? const Icon(Icons.light_mode_outlined)
+                      : const Icon(Icons.dark_mode_outlined),
+                  onTap: ref
+                      .read(appPreferenceNotifierProvider.notifier)
+                      .toggleBrightness,
+                  title: Text(isDarkMode ? 'Light mode' : 'Dark mode'),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
       body: AnimatedBuilder(
         animation: _animationController,
         builder: (context, child) => Stack(
           children: [
+            Positioned.fill(
+              child: GestureDetector(
+                onPanUpdate: (details) {
+                  // if user swipe from left edge --> open drawer
+                  if (details.delta.dx > 30) {
+                    Scaffold.of(context).openDrawer();
+                  }
+                },
+                child: Container(color: Colors.transparent),
+              ),
+            ),
             for (final body in widget.game.secondBodies)
               _buildBodyWidget(body, secondTextStyle),
             for (final body in widget.game.minuteBodies)
