@@ -9,8 +9,20 @@
 
 import 'package:flutter/widgets.dart';
 
+class $AssetsAudioGen {
+  const $AssetsAudioGen();
+
+  /// File path: assets/audio/falling_sfx.mp3
+  String get fallingSfx => 'assets/audio/falling_sfx.mp3';
+
+  /// List of all assets
+  List<String> get values => [fallingSfx];
+}
+
 class Assets {
   Assets._();
+
+  static const $AssetsAudioGen audio = $AssetsAudioGen();
 }
 
 class AssetGenImage {
